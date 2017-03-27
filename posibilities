@@ -1,0 +1,7 @@
+find faces store ROI
+rotate faces
+  or rotate face ROI
+
+
+draw every frame track every 5 frames?
+  something like that would cut down computation time?

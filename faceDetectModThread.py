@@ -2,6 +2,77 @@ import cv2
 import sys
 
 
+#import imutils
+
+import datetime
+
+from threading import Thread
+
+class FPS:
+    def __init__(self):
+        self._start = None
+        self._end = None
+        self._numFrames = 0
+        #start time, end time and number of frames
+
+    def start(self):
+        self._start = datetime.datetime.now()
+        return self
+        #sets the start time
+
+    def stop(self):
+        self._end = datetime.datetime.now()
+        return self
+        #sets the end time
+
+    def update(self):
+        self._numFrames +=1
+        return self
+
+    def elapsed(self):
+        return (self._end - self._start).total_seconds()
+        #time elapsed
+
+    def fps(self):
+        return self._numFrames / self.elapsed()
+        #approx fps
+
+
+class WebcamVideoStream:
+
+    	def __init__(self, src=0):
+            # initialize the video camera stream and read the first frame
+		    # from the stream
+		    self.stream = cv2.VideoCapture(src)
+		    (self.grabbed, self.frame) = self.stream.read()
+
+		    # initialize the variable used to indicate if the thread should
+		    # be stopped
+		    self.stopped = False
+
+        def start(self):
+            Thread(target = self.update, args=()).start()
+            return self
+            #starts thread
+
+        def update(self):
+            while(True):
+                if self.stopped:
+                    return
+                #read frame
+                (self.grabbed, self.frame) = self.stream.read()
+
+        def read(self):
+            return self.frame
+            #return the most recent frame
+
+        def stop(self):
+            self.stopped = True
+
+
+
+
+
 # Get user supplied values
 faceImagePath = sys.argv[1]
 
@@ -17,7 +88,7 @@ eyeCascade = cv2.CascadeClassifier('haarcascade_eye.xml')
 
 faceImage = cv2.imread(faceImagePath, -1)
 
-cap = cv2.VideoCapture(0)
+cap = WebcamVideoStream(src = 0).start()
 
 print(faceImage.shape)
 
@@ -54,10 +125,10 @@ def overlay(image, faceImage, posx, posy, S, D, w, h):
          #   print("x too big?")
 
 while(True):
-    ret, frame = cap.read()
+    frame = cap.read()
     gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
     # Detect faces in the image
-    fno = cap.get(cv2.cv.CV_CAP_PROP_POS_FRAMES)
+    #fno = cap.get(cv2.cv.CV_CAP_PROP_POS_FRAMES)
     # if fno % 5 == 0:
     faces = faceCascade.detectMultiScale(
         gray,
