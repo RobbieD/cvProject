@@ -1,5 +1,6 @@
 import cv2
 import sys
+import imutils
 
 
 #import imutils
@@ -126,6 +127,7 @@ def overlay(image, faceImage, posx, posy, S, D, w, h):
 
 while(True):
     frame = cap.read()
+    frame = imutils.resize(frame, width = 700)
     gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
     # Detect faces in the image
     #fno = cap.get(cv2.cv.CV_CAP_PROP_POS_FRAMES)
