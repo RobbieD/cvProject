@@ -14,7 +14,7 @@ class FPS:
         self._start = None
         self._end = None
         self._numFrames = 0
-        #start time, end time and number of frames
+        #start time, end time and number of frame
 
     def start(self):
         self._start = datetime.datetime.now()
@@ -41,15 +41,15 @@ class FPS:
 
 class WebcamVideoStream:
 
-    	def __init__(self, src=0):
+        def __init__(self, src=0):
             # initialize the video camera stream and read the first frame
 		    # from the stream
-		    self.stream = cv2.VideoCapture(src)
-		    (self.grabbed, self.frame) = self.stream.read()
+            self.stream = cv2.VideoCapture(src)
+            (self.grabbed, self.frame) = self.stream.read()
 
 		    # initialize the variable used to indicate if the thread should
 		    # be stopped
-		    self.stopped = False
+            self.stopped = False
 
         def start(self):
             Thread(target = self.update, args=()).start()
@@ -69,6 +69,7 @@ class WebcamVideoStream:
 
         def stop(self):
             self.stopped = True
+
 
 
 
@@ -106,10 +107,10 @@ def overlay(image, faceImage, posx, posy, S, D, w, h):
             for y in range(faceImage.shape[0]):
                 if y + posy < image.shape[0]:
                     try:
-                        source = cv2.cv.Get2D(cv2.cv.fromarray(image), y+posy, x+posx)
+                        source = image[y+posy,x+posx]
                     except IndexError:
                         print("indexError")
-                    over = cv2.cv.Get2D(cv2.cv.fromarray(faceImage), y, x)
+                    over = faceImage[y, x]
                     merger = [0, 0, 0, 0]
 
                     for i in range(3):
@@ -119,7 +120,7 @@ def overlay(image, faceImage, posx, posy, S, D, w, h):
                             merger[i] = (S[i]*source[i]+D[i]*over[i])
                     merged = tuple(merger)
 
-                    cv2.cv.Set2D(cv2.cv.fromarray(image), y+posy, x+posx, merged)
+                    image[y+posy, x+posx] = merged
           #      else:
            #         print("y too big?")
         #else:
@@ -137,7 +138,7 @@ while(True):
         scaleFactor=1.1,
         minNeighbors=5,
         minSize=(30, 30),
-        flags = cv2.cv.CV_HAAR_SCALE_IMAGE
+        flags = cv2.CASCADE_SCALE_IMAGE
     )
     #
     #print("Found {0} faces!".format(len(faces)))
@@ -151,14 +152,14 @@ while(True):
         #for (ex, ey, ew, eh) in eyes:
             #detect eyes for scaling purposes
             #cv2.rectangle(roi_color,(ex,ey),(ex+ew,ey+eh),(0,255,0),2)
+        print("Found a face!")
         overlay(frame, faceImage, int(x - (0.3 * w)), int(y - (0.3 * h)), S, D, w, h)
     #
-   	cv2.imshow('frame', frame)
-	if cv2.waitKey(1) & 0xFF == ord('q'):
-		break
+    cv2.imshow('frame', frame)
+    if cv2.waitKey(1) & 0xFF == ord('q'):
+        break
 
 cv2.destroyAllWindows()
 cap.stop()
-
 #cv2.imshow("Faces found", image)
 #cv2.waitKey(0)
