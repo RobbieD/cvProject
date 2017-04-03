@@ -92,12 +92,8 @@ faceImage = cv2.imread(faceImagePath, -1)
 
 cap = WebcamVideoStream(src = 0).start()
 
-print(faceImage.shape)
-
 S = (0.0, 0.0, 0.0, 0.0)			# Define blending coefficients S and D
 D = (1, 1, 1, 1)
-
-
 
 def overlay(image, faceImage, posx, posy, S, D, w, h):
     #print (" posx: "+str(posx)+" posy: "+str(posy)   )
@@ -110,7 +106,8 @@ def overlay(image, faceImage, posx, posy, S, D, w, h):
                         source = image[y+posy,x+posx]
                     except IndexError:
                         print("indexError")
-                    over = faceImage[y, x]
+                    over = faceImage[y, x, :]
+
                     merger = [0, 0, 0, 0]
 
                     for i in range(3):
@@ -119,8 +116,7 @@ def overlay(image, faceImage, posx, posy, S, D, w, h):
                         else:
                             merger[i] = (S[i]*source[i]+D[i]*over[i])
                     merged = tuple(merger)
-
-                    image[y+posy, x+posx] = merged
+                    image[y+posy, x+posx, :] = merged[0:3]
           #      else:
            #         print("y too big?")
         #else:
@@ -152,7 +148,6 @@ while(True):
         #for (ex, ey, ew, eh) in eyes:
             #detect eyes for scaling purposes
             #cv2.rectangle(roi_color,(ex,ey),(ex+ew,ey+eh),(0,255,0),2)
-        print("Found a face!")
         overlay(frame, faceImage, int(x - (0.3 * w)), int(y - (0.3 * h)), S, D, w, h)
     #
     cv2.imshow('frame', frame)
