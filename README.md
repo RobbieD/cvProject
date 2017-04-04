@@ -4,9 +4,12 @@ Step 1. install imutils
 
       "pip install imutils"
 
-Step 2. run "faceDetectModThread.py" with the obama2 overlay
+Step 2. run "faceDetectModThread.py" or "faceDetectModThread_cv3.py" with the obama2 overlay
+      
 
       "python faceDetectModThread.py obama2.png"
+      <or>
+      "python faceDetectModThread_cv3.py obama2.png"
 
 Step 3. Enjoy
 
